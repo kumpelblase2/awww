@@ -13,6 +13,10 @@ interface ImgurApi {
     fun getTopImagesFromSubreddit(@Path("subreddit") subreddit: String, @Path("page")
     page: Int): Call<SubredditApiResponse>
 
+    @GET("gallery/r/{subreddit}/top/{time}/{page}")
+    fun getTopImagesFromSubreddit(@Path("subreddit") subreddit: String, @Path("page")
+    page: Int, @Path("time") time: String): Call<SubredditApiResponse>
+
     companion object {
         val BASE_URL = "https://api.imgur.com/3/"
 

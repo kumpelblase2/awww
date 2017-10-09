@@ -8,6 +8,12 @@ fun Logger.debug(messageProducer: () -> String) {
     }
 }
 
+fun Logger.trace(messageProducer: () -> String) {
+    if (this.isTraceEnabled) {
+        this.trace(messageProducer())
+    }
+}
+
 fun Logger.info(messageProducer: () -> String) {
     if (this.isInfoEnabled) {
         this.info(messageProducer())

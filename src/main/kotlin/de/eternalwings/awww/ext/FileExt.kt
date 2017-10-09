@@ -2,7 +2,7 @@ package de.eternalwings.awww.ext
 
 import java.io.File
 
-fun File.createWithParentsIfNotExist(): Boolean {
+fun File.createWithParentsIfNotExist(initialText: String = ""): Boolean {
     if (!this.exists()) {
         val parentDir = this.parentFile
         if (!parentDir.exists()) {
@@ -11,7 +11,11 @@ fun File.createWithParentsIfNotExist(): Boolean {
             }
         }
 
-        if (!this.createNewFile()) {
+        if (this.createNewFile()) {
+            if (initialText.isNotEmpty()) {
+                this.writeText(initialText)
+            }
+        } else {
             return false
         }
     }

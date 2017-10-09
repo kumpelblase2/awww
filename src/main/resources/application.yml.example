@@ -4,6 +4,8 @@ twitch:
   app-username: <twitch user>
   initial-channels:
     - streamer
+  trusted-users:
+    - sometwitchusername
 
 imgur:
   client-id: <imgur-id>

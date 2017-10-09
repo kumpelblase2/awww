@@ -22,6 +22,7 @@ class TwitterConfig {
     fun twitterConfiguration(): twitter4j.conf.Configuration {
         return ConfigurationBuilder().setOAuthConsumerKey(twitterSettings.consumerKey).setOAuthConsumerSecret(
                 twitterSettings.consumerSecret).setOAuthAccessToken(
-                twitterSettings.accessToken).setOAuthAccessTokenSecret(twitterSettings.accessTokenSecret).build()
+                twitterSettings.accessToken).setOAuthAccessTokenSecret(twitterSettings.accessTokenSecret)
+                .build()
     }
 }
