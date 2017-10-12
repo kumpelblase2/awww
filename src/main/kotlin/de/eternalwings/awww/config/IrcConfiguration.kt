@@ -25,7 +25,7 @@ class IrcConfiguration {
             it.eventManager.registerEventListener(createEventListener(it))
         }
 
-        return Client.builder().nick(twitchSettings.appUsername).serverHost(TWITCH_SERVER).serverPassword(
+        return Client.builder().nick(twitchSettings.appUsername).serverHost(TWITCH_SERVER).serverPort(TWITCH_PORT).serverPassword(
                 serverPassword).messageSendingQueueSupplier(TwitchDelaySender.getSupplier(false)).afterBuildConsumer(
                 registerCustomEventListener).build()
     }
@@ -33,7 +33,8 @@ class IrcConfiguration {
     private fun createEventListener(client: Client) = TwitchListener(client)
 
     companion object {
-        private val TWITCH_SERVER = "irc.twitch.tv"
+        private val TWITCH_SERVER = "irc.chat.twitch.tv"
+        private val TWITCH_PORT = 443
 
         fun toTwitchServerPassword(token: String) = "oauth:" + token
     }
