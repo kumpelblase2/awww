@@ -12,15 +12,17 @@ public class TwitchSettings {
 
     private List<String> initialChannels;
     private List<String> trustedUsers;
+    private List<String> admins;
 
     public TwitchSettings() {
     }
 
-    public TwitchSettings(String appUsername, String appOauthToken, List<String> initialChannels, List<String> trustedUsers) {
+    public TwitchSettings(String appUsername, String appOauthToken, List<String> initialChannels, List<String> trustedUsers, List<String> admins) {
         this.appUsername = appUsername;
         this.appOauthToken = appOauthToken;
         this.initialChannels = initialChannels;
         this.trustedUsers = trustedUsers;
+        this.admins = admins;
     }
 
     public String getAppUsername() {
@@ -53,5 +55,13 @@ public class TwitchSettings {
 
     public void setTrustedUsers(List<String> trustedUsers) {
         this.trustedUsers = trustedUsers;
+    }
+
+    public List<String> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(List<String> admins) {
+        this.admins = admins;
     }
 }
