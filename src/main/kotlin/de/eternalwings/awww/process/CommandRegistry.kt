@@ -19,7 +19,8 @@ class CommandRegistry(private val commands: MutableList<Command>) {
         } else {
             val command = commands.firstOrNull { it.appliesTo(message) } ?: return null
             LOGGER.debug { "Let plugin ${command.javaClass.simpleName} handle message." }
-            return command.responseTo(message, user)
+            val response = command.responseTo(message, user)
+            return if (response.isNotEmpty()) response else null
         }
     }
 
