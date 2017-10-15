@@ -6,6 +6,8 @@ twitch:
     - streamer
   trusted-users:
     - sometwitchusername
+  admins:
+    - youprobably
   message-limit: 10
 
 imgur:
