@@ -9,6 +9,7 @@ public class TwitchSettings {
 
     private String appUsername;
     private String appOauthToken;
+    private Integer messageLimit;
 
     private List<String> initialChannels;
     private List<String> trustedUsers;
@@ -17,9 +18,10 @@ public class TwitchSettings {
     public TwitchSettings() {
     }
 
-    public TwitchSettings(String appUsername, String appOauthToken, List<String> initialChannels, List<String> trustedUsers, List<String> admins) {
+    public TwitchSettings(String appUsername, String appOauthToken, Integer messageLimit, List<String> initialChannels, List<String> trustedUsers, List<String> admins) {
         this.appUsername = appUsername;
         this.appOauthToken = appOauthToken;
+        this.messageLimit = messageLimit;
         this.initialChannels = initialChannels;
         this.trustedUsers = trustedUsers;
         this.admins = admins;
@@ -63,5 +65,13 @@ public class TwitchSettings {
 
     public void setAdmins(List<String> admins) {
         this.admins = admins;
+    }
+
+    public Integer getMessageLimit() {
+        return messageLimit;
+    }
+
+    public void setMessageLimit(Integer messageLimit) {
+        this.messageLimit = messageLimit;
     }
 }

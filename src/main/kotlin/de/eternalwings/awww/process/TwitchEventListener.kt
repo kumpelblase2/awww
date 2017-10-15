@@ -9,20 +9,54 @@ import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteE
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Component
 class TwitchEventListener(private val twitchSettings: TwitchSettings, private val commandRegistry: CommandRegistry) {
+    private var durationStart = LocalDateTime.MIN
+    private var commands = 0
+
     @Handler
     fun onChannelMessage(messageEvent: ChannelMessageEvent) {
         LOGGER.debug { "${messageEvent.channel.name}\t| Received message: (${messageEvent.actor.nick}) ${messageEvent.message}" }
+        if (this.atLimit()) {
+            LOGGER.info { "Not handling command because limited." }
+        }
+
         val response = this.commandRegistry.handleMessage(messageEvent.message, messageEvent.actor)
         if (response != null) {
+            this.increaseLimit()
             LOGGER.debug { "Sending(${messageEvent.channel.name}): $response" }
             if (messageEvent.actor.nick == twitchSettings.appUsername && messageEvent.channel.name != "#" + twitchSettings.appUsername) {
                 LOGGER.debug { "Adding an additional sleep because the same user is used as response." }
                 Thread.sleep(2 * 1000)
             }
             messageEvent.client.sendMessage(messageEvent.channel, response)
+        }
+    }
+
+    private fun increaseLimit() {
+        if (!this.isInsideLimitingDuration()) {
+            LOGGER.debug { "Starting new limiting period." }
+            this.durationStart = LocalDateTime.now()
+            this.commands = 0
+        }
+
+        this.commands += 1
+    }
+
+    private fun isInsideLimitingDuration(): Boolean {
+        val currentTime = LocalDateTime.now()
+        return currentTime.minus(LIMIT_DURATION).isBefore(this.durationStart)
+    }
+
+    private fun atLimit(): Boolean {
+        if (this.isInsideLimitingDuration()) {
+            return this.commands >= this.twitchSettings.messageLimit
+        } else {
+            return false
         }
     }
 
@@ -43,6 +77,7 @@ class TwitchEventListener(private val twitchSettings: TwitchSettings, private va
     companion object {
         private val LOGGER = LoggerFactory.getLogger(TwitchEventListener::class.java)
         private val THREAD_NAME = "IRC Events"
+        private val LIMIT_DURATION = Duration.of(1, ChronoUnit.MINUTES)
 
         fun asChannelName(channelName: String) = "#" + channelName
     }

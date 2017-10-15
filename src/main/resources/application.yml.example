@@ -6,6 +6,7 @@ twitch:
     - streamer
   trusted-users:
     - sometwitchusername
+  message-limit: 10
 
 imgur:
   client-id: <imgur-id>
