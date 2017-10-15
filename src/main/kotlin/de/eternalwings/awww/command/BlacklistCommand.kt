@@ -7,10 +7,10 @@ import org.kitteh.irc.client.library.element.User
 import org.springframework.stereotype.Component
 
 @Component
-class BlacklistCommand(private val imageQueue: ImageQueue, private val imageBlacklist: ImageBlacklist, private val twitchSettings: TwitchSettings) :
-        SimpleCommand("blacklist") {
+class BlacklistCommand(private val imageQueue: ImageQueue, private val imageBlacklist: ImageBlacklist,
+                       private val twitchSettings: TwitchSettings) : SimpleCommand("blacklist") {
     override fun respondTo(args: Sequence<String>, user: User): String {
-        if(!twitchSettings.trustedUsers.contains(user.nick)) {
+        if (!twitchSettings.trustedUsers.contains(user.nick)) {
             return "Who dis?"
         }
 
@@ -20,6 +20,7 @@ class BlacklistCommand(private val imageQueue: ImageQueue, private val imageBlac
         } else {
             this.imageQueue.last()
         }
+
         return link?.let {
             this.imageBlacklist.addToBlacklist(it)
             "Added to blacklist VoHiYo"

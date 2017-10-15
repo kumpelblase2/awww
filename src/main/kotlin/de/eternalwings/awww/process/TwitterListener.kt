@@ -28,21 +28,18 @@ class TwitterListener(private val twitterStream: TwitterStream, private val stre
     }
 
     fun onStatus(status: Status) {
-        LOGGER.debug { "Received tweet: " + status.text }
-
         if (status.user.id != twitterSettings.userId) {
             LOGGER.trace { "Status from other user: ${status.user.name} - ${status.text}" }
             return
         }
 
+        LOGGER.debug { "Received tweet: " + status.text }
+
         if (status.isAnnouncementTweet()) {
             LOGGER.debug { "Notifying subscribers, she's going live." }
-            //notifier.notifyStream(status.text)
             streamNotifier.notifyStreamLive(status.text)
         } else if (status.isNormalTweet()) {
             LOGGER.debug { "Just a normal tweet, broadcasting in chat." }
-            // not sure, maybe do something ...
-            //.sendMessage("", "Twitter - ${status.user.name}: ${status.text}")
             streamNotifier.notifyStatusUpdate(status.text)
         }
     }
@@ -62,4 +59,6 @@ fun Status.isReply(): Boolean {
     return this.inReplyToUserId >= 0 || this.inReplyToStatusId >= 0
 }
 
+// As far as I can tell, there's no nice way to check if a tweet would end up on the timeline of the followers.
+// So this tries to filter all retweets and replys out.
 fun Status.isNormalTweet() = !this.isRetweet && !this.isReply()
