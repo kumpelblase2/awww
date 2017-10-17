@@ -38,6 +38,11 @@ class TwitterListener(private val twitterStream: TwitterStream, private val stre
         if (status.isAnnouncementTweet()) {
             LOGGER.debug { "Notifying subscribers, she's going live." }
             streamNotifier.notifyStreamLive(status.text)
+
+            if (status.mediaEntities.isNotEmpty()) {
+                LOGGER.debug { "Announcement tweet, but has media entries" }
+                streamNotifier.notifyStatusUpdate(status.text)
+            }
         } else if (status.isNormalTweet()) {
             LOGGER.debug { "Just a normal tweet, broadcasting in chat." }
             streamNotifier.notifyStatusUpdate(status.text)
