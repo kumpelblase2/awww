@@ -5,6 +5,8 @@ import de.eternalwings.awww.process.ImageQueue
 import de.eternalwings.awww.process.ImageStorage
 import org.kitteh.irc.client.library.element.User
 import org.springframework.stereotype.Component
+import java.net.MalformedURLException
+import java.net.URL
 
 @Component
 class CuteCommand(private val imageQueue: ImageQueue, private val imageStorage: ImageStorage,
@@ -19,8 +21,21 @@ class CuteCommand(private val imageQueue: ImageQueue, private val imageStorage: 
                 return "Who dis?"
             }
 
+            if (!firstArgument.isURL()) {
+                return "Are you sure this is an image?"
+            }
+
             this.imageStorage.addImage(firstArgument)
             return "Added to list. Will show up sooner or later. omgHype"
         }
+    }
+}
+
+fun String.isURL(): Boolean {
+    try {
+        val parsed = URL(this)
+        return parsed.host.contains('.')
+    } catch (ex: MalformedURLException) {
+        return false
     }
 }
