@@ -23,7 +23,7 @@ class BlacklistCommand(private val imageQueue: ImageQueue, private val imageBlac
 
         return link?.let {
             this.imageBlacklist.addToBlacklist(it)
-            "Added to blacklist VoHiYo"
+            "Added $it to blacklist VoHiYo"
         } ?: "No link found FeelsBadMan"
     }
 

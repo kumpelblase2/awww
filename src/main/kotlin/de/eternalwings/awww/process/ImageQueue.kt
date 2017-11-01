@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component
 import java.io.File
 import java.io.FileNotFoundException
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.ArrayDeque
 import java.util.Optional
 import java.util.Queue
@@ -68,7 +69,7 @@ class ImageQueue(imgurSettings: ImgurSettings, private val gson: Gson, private v
         LOGGER.debug("New queue size is ${this.queue.size}.")
     }
 
-    fun last() = this.queue.lastOrNull()
+    fun last() = this.usages.maxBy { it.value.toEpochSecond(ZoneOffset.UTC) }?.key
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(ImageQueue::class.java)
