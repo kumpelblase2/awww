@@ -41,11 +41,11 @@ class TwitterListener(private val twitterStream: TwitterStream, private val stre
 
             if (status.mediaEntities.isNotEmpty()) {
                 LOGGER.debug { "Announcement tweet, but has media entries" }
-                streamNotifier.notifyStatusUpdate(status.text)
+                streamNotifier.notifyStatusUpdate(status.text, status.getSourceLink())
             }
         } else if (status.isNormalTweet()) {
             LOGGER.debug { "Just a normal tweet, broadcasting in chat." }
-            streamNotifier.notifyStatusUpdate(status.text)
+            streamNotifier.notifyStatusUpdate(status.text, status.getSourceLink())
         }
     }
 
@@ -67,3 +67,5 @@ fun Status.isReply(): Boolean {
 // As far as I can tell, there's no nice way to check if a tweet would end up on the timeline of the followers.
 // So this tries to filter all retweets and replys out.
 fun Status.isNormalTweet() = !this.isRetweet && !this.isReply()
+
+fun Status.getSourceLink() = "https://twitter.com/${this.user.screenName}/status/${this.id}"

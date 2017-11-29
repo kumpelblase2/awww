@@ -23,7 +23,7 @@ class StreamNotifier(private val pushbullet: Pushbullet, private val ircClient: 
                 "https://twitch.tv/" + streamUpdateSettings.twitchChannel)
     }
 
-    fun notifyStatusUpdate(message: String) {
-        ircClient.sendMessage("#" + streamUpdateSettings.twitchChannel, "Tweet: " + message)
+    fun notifyStatusUpdate(message: String, link: String) {
+        ircClient.sendMessage("#" + streamUpdateSettings.twitchChannel, "Tweet: $message - $link")
     }
 }
