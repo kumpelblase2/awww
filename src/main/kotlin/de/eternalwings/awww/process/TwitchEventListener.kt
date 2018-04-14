@@ -6,7 +6,7 @@ import de.eternalwings.awww.ext.info
 import net.engio.mbassy.listener.Handler
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent
-import org.kitteh.irc.client.library.event.client.ClientConnectedEvent
+import org.kitteh.irc.client.library.event.client.ClientConnectionEstablishedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Duration
@@ -61,7 +61,7 @@ class TwitchEventListener(private val twitchSettings: TwitchSettings, private va
     }
 
     @Handler
-    fun onConnected(connectedEvent: ClientConnectedEvent) {
+    fun onConnected(connectedEvent: ClientConnectionEstablishedEvent) {
         Thread.currentThread().name = THREAD_NAME
 
         LOGGER.debug { "Connected to Twitch." }

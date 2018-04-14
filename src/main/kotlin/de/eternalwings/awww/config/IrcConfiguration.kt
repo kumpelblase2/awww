@@ -21,13 +21,11 @@ class IrcConfiguration {
     @Bean(destroyMethod = "shutdown")
     fun ircClient(): Client {
         val serverPassword = toTwitchServerPassword(twitchSettings.appOauthToken)
-        val registerCustomEventListener = Consumer<Client> {
-            it.eventManager.registerEventListener(createEventListener(it))
-        }
-
-        return Client.builder().nick(twitchSettings.appUsername).serverHost(TWITCH_SERVER).serverPort(TWITCH_PORT).serverPassword(
-                serverPassword).messageSendingQueueSupplier(TwitchDelaySender.getSupplier(false)).afterBuildConsumer(
-                registerCustomEventListener).build()
+        val builtClient = Client.builder().nick(twitchSettings.appUsername).serverHost(TWITCH_SERVER).serverPort(TWITCH_PORT).serverPassword(
+                serverPassword).messageSendingQueueSupplier(TwitchDelaySender.getSupplier(false)).build()
+        builtClient.eventManager.registerEventListener(createEventListener(builtClient))
+        builtClient.connect()
+        return builtClient
     }
 
     private fun createEventListener(client: Client) = TwitchListener(client)
