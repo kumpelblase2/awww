@@ -6,6 +6,7 @@ import de.eternalwings.awww.ext.info
 import net.engio.mbassy.listener.Handler
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent
+import org.kitteh.irc.client.library.event.client.ClientConnectionEndedEvent
 import org.kitteh.irc.client.library.event.client.ClientConnectionEstablishedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -67,6 +68,14 @@ class TwitchEventListener(private val twitchSettings: TwitchSettings, private va
         LOGGER.debug { "Connected to Twitch." }
         LOGGER.info { "Joining initial channels: ${twitchSettings.initialChannels.joinToString(",")}" }
         twitchSettings.initialChannels.map { asChannelName(it) }.forEach { connectedEvent.client.addChannel(it) }
+    }
+
+    @Handler
+    fun onDisconnected(connectionClosedEvent: ClientConnectionEndedEvent) {
+        LOGGER.info { "Connection to twitch closed." }
+        connectionClosedEvent.cause.ifPresent { exception ->
+            LOGGER.info(exception) { "Caused by:" }
+        }
     }
 
     @Handler

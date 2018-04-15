@@ -19,3 +19,9 @@ fun Logger.info(messageProducer: () -> String) {
         this.info(messageProducer())
     }
 }
+
+fun Logger.info(exception: Throwable, messageProducer: () -> String) {
+    if (this.isInfoEnabled) {
+        this.info(messageProducer(), exception)
+    }
+}
