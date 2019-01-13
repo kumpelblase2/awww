@@ -26,6 +26,6 @@ class CommandRegistry(private val commands: MutableList<Command>) {
 
     companion object {
         val LOGGER = LoggerFactory.getLogger(CommandRegistry::class.java)
-        val COMMAND_PREFIX = "!"
+        const val COMMAND_PREFIX = "!"
     }
 }

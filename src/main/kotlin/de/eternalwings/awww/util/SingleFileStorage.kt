@@ -7,11 +7,11 @@ import de.eternalwings.awww.ext.toJson
 import java.io.File
 import kotlin.reflect.KClass
 
-abstract class SingleFileStorage<T : Any>(protected val gson: Gson, private val type: KClass<T>, private val initialContents: String = "") {
+abstract class SingleFileStorage<T : Any>(private val gson: Gson, private val type: KClass<T>, private val initialContents: String = "") {
     abstract val storageFile: File
 
     abstract val default: () -> T
-    lateinit protected var data: T
+    protected lateinit var data: T
 
     private fun getAndCreateFile(): File {
         if (!this.storageFile.createWithParentsIfNotExist(this.initialContents)) {

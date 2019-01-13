@@ -6,14 +6,17 @@ import de.eternalwings.awww.ext.info
 import net.engio.mbassy.listener.Handler
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent
+import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent
 import org.kitteh.irc.client.library.event.client.ClientConnectionEndedEvent
 import org.kitteh.irc.client.library.event.client.ClientConnectionEstablishedEvent
+import org.kitteh.irc.client.library.event.client.ClientConnectionFailedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
+@Suppress("unused")
 @Component
 class TwitchEventListener(private val twitchSettings: TwitchSettings, private val commandRegistry: CommandRegistry) {
     private var durationStart = LocalDateTime.MIN
@@ -72,6 +75,11 @@ class TwitchEventListener(private val twitchSettings: TwitchSettings, private va
 
     @Handler
     fun onDisconnected(connectionClosedEvent: ClientConnectionEndedEvent) {
+        when (connectionClosedEvent) {
+            is ClientConnectionFailedEvent -> LOGGER.debug { "Connection Failure!" }
+            is ClientConnectionClosedEvent -> LOGGER.debug { "Connection closed!" }
+        }
+
         LOGGER.info { "Connection to twitch closed." }
         connectionClosedEvent.cause.ifPresent { exception ->
             LOGGER.info(exception) { "Caused by:" }
@@ -85,9 +93,9 @@ class TwitchEventListener(private val twitchSettings: TwitchSettings, private va
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(TwitchEventListener::class.java)
-        private val THREAD_NAME = "IRC Events"
+        private const val THREAD_NAME = "IRC Events"
         private val LIMIT_DURATION = Duration.of(1, ChronoUnit.MINUTES)
 
-        fun asChannelName(channelName: String) = "#" + channelName
+        fun asChannelName(channelName: String) = "#$channelName"
     }
 }

@@ -74,8 +74,8 @@ class ImageQueue(imgurSettings: ImgurSettings, private val gson: Gson, private v
     companion object {
         private val LOGGER = LoggerFactory.getLogger(ImageQueue::class.java)
         private val UNUSED_TIME = LocalDateTime.MIN
-        private val CACHEFILE_NAME = "imageCache.json"
-        private val DEFAULT_QUEUE_SIZE = 10
+        private const val CACHEFILE_NAME = "imageCache.json"
+        private const val DEFAULT_QUEUE_SIZE = 10
     }
 }
 

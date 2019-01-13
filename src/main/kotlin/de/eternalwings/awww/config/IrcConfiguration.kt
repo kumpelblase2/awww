@@ -2,8 +2,7 @@ package de.eternalwings.awww.config
 
 import de.eternalwings.awww.TwitchSettings
 import org.kitteh.irc.client.library.Client
-import org.kitteh.irc.client.library.feature.twitch.TwitchDelaySender
-import org.kitteh.irc.client.library.feature.twitch.TwitchListener
+import org.kitteh.irc.client.library.feature.twitch.TwitchSupport
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -21,15 +20,17 @@ class IrcConfiguration {
     @Bean(destroyMethod = "shutdown")
     fun ircClient(): Client {
         val serverPassword = toTwitchServerPassword(twitchSettings.appOauthToken)
-        val builtClient = Client.builder().nick(twitchSettings.appUsername).serverHost(TWITCH_SERVER).serverPort(TWITCH_PORT).serverPassword(
-                serverPassword).messageSendingQueueSupplier(TwitchDelaySender.getSupplier(false)).build()
-        builtClient.eventManager.registerEventListener(TwitchListener(builtClient))
+        val builtClient = Client.builder().nick(twitchSettings.appUsername)
+            .server().host(TWITCH_SERVER).port(TWITCH_PORT).password(serverPassword).secure(true).then()
+            .build()
+        TwitchSupport.addSupport(builtClient, false)
+
         return builtClient
     }
 
     companion object {
-        private val TWITCH_SERVER = "irc.chat.twitch.tv"
-        private val TWITCH_PORT = 443
+        private const val TWITCH_SERVER = "irc.chat.twitch.tv"
+        private const val TWITCH_PORT = 443
 
         fun toTwitchServerPassword(token: String) = "oauth:$token"
     }
